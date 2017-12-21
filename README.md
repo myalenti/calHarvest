@@ -1,2 +1,13 @@
 # calendar_harvest
-First task is to get Access to Google Calendar working - Given it uses OAuth it might be a bit tricky
+
+Installing the mongodb driver
+npm install mongodb --save
+
+Installing the google Calendar API
+npm install googleapis --save
+npm install google-auth-library --save
+
+Follow instructions at https://developers.google.com/google-apps/calendar/quickstart/nodejs to get the quickstart off the ground.
+The instructions covers getting an OAuth Token for the application to use.
+
+
