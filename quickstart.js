@@ -6,7 +6,7 @@ var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var CalIds = [ 'shawn.mccarthy@10gen.com', 'michael.lynn@10gen.com'];
 
-var uri = "mongodb://myalenti:1sqw2aA9@calendarharvest-shard-00-00-hm1mt.mongodb.net:27017,calendarharvest-shard-00-01-hm1mt.mongodb.net:27017,calendarharvest-shard-00-02-hm1mt.mongodb.net:27017/admin?ssl=true&replicaSet=calendarHarvest-shard-0&authSource=admin"
+//var uri = "Needs sourcing from local secured files";
 var dbname = "calendarHarvest";
 var collName = "calendarHarvest";
 var assert = require('assert');
