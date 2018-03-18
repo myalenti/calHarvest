@@ -12,8 +12,8 @@ var CalIds = [ 'shawn.Mccarthy@10gen.com', 'michael.lynn@10gen.com'];
 var uri = "mongodb+srv://" + config.username + ":" + config.password + "@" + config.repSetName + "/" + config.database;
 console.log(uri);
 //mongodb+srv://<USERNAME>:<PASSWORD>@calharvest-hm1mt.mongodb.net/test
-var dbname = "calendarHarvest";
-var collName = "calendarHarvest";
+var dbname = config.database;
+var collName = config.collection;
 var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 
