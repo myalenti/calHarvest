@@ -1,0 +1,24 @@
+{
+  "name": "calendar_harvest",
+  "version": "1.0.0",
+  "description": "Collecting from Google Calendar and dumping to MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myalenti/calendar_harvest.git"
+  },
+  "author": "Mark Yalenti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/myalenti/calendar_harvest/issues"
+  },
+  "homepage": "https://github.com/myalenti/calendar_harvest#readme",
+  "dependencies": {
+    "google-auth-library": "^0.12.0",
+    "googleapis": "^23.0.0",
+    "mongodb": "^3.0.1"
+  }
+}
