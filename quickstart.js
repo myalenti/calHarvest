@@ -4,6 +4,14 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+var CalIds = [ 'shawn.mccarthy@10gen.com', 'michael.lynn@10gen.com'];
+
+var uri = "mongodb://myalenti:1sqw2aA9@calendarharvest-shard-00-00-hm1mt.mongodb.net:27017,calendarharvest-shard-00-01-hm1mt.mongodb.net:27017,calendarharvest-shard-00-02-hm1mt.mongodb.net:27017/admin?ssl=true&replicaSet=calendarHarvest-shard-0&authSource=admin"
+var dbname = "calendarHarvest";
+var collName = "calendarHarvest";
+var assert = require('assert');
+var MongoClient = require('mongodb').MongoClient;
+
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/calendar-nodejs-quickstart.json
@@ -12,7 +20,9 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
+
 // Load client secrets from a local file.
+//load the file, then execute callback function processClientSecrets.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   if (err) {
     console.log('Error loading client secret file: ' + err);
@@ -20,8 +30,12 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Google Calendar API.
+  //just passing two args to the authorize function
+  //paring content allows for reference using dot notation
+  //listEvents is the google api action to get actions
   authorize(JSON.parse(content), listEvents);
 });
+
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -31,17 +45,25 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(credentials, callback) {
+  //pulling the secret
   var clientSecret = credentials.installed.client_secret;
+  //pulling the clientId
   var clientId = credentials.installed.client_id;
+  //pulling the redirectUrl
   var redirectUrl = credentials.installed.redirect_uris[0];
+
+  //create new auth object
   var auth = new googleAuth();
+  //create new oauth2client using parameters from file
   var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, function(err, token) {
     if (err) {
+      //if we don't get a new token
       getNewToken(oauth2Client, callback);
     } else {
+      //if we do, use that token to do the oauth
       oauth2Client.credentials = JSON.parse(token);
       callback(oauth2Client);
     }
@@ -104,9 +126,10 @@ function storeToken(token) {
  */
 function listEvents(auth) {
   var calendar = google.calendar('v3');
+for ( var i = 0 ; i < CalIds.length ; i++){
   calendar.events.list({
     auth: auth,
-    calendarId: 'primary',
+    calendarId: CalIds[i],
     timeMin: (new Date()).toISOString(),
     maxResults: 10,
     singleEvents: true,
@@ -121,11 +144,44 @@ function listEvents(auth) {
       console.log('No upcoming events found.');
     } else {
       console.log('Upcoming 10 events:');
+      //take the events object and save to MongoDB
+      //connect, get a db, get a collection, save to document in collection
+      MongoClient.connect(uri, function(err, client){
+        if (err) {
+          console.log("Something went wrong with the mongoclient");
+          console.log(err);
+          client.close();
+        } else {
+          var db = client.db("dbname");
+          db.collection(collName, function(err, collection){
+            if (err){
+              console.log("Opps with getting the collection");
+              console.log(err);
+              client.close();
+            }else{
+              collection.insertOne( { "entries" : events} db, function(err, result){
+                if (err){
+                  console.log("Oops with the insertone");
+                  console.log(err);
+                  console.log(events);
+                  client.close();
+                }else{
+                    console.log("Inserted");
+                    console.log(result);
+                    client.close();
+                };
+              });
+            };
+          });
+        };
+      });
+
+
       for (var i = 0; i < events.length; i++) {
         var event = events[i];
         var start = event.start.dateTime || event.start.date;
         console.log('%s - %s', start, event.summary);
       }
     }
-  });
+  })};
 }
