@@ -4,9 +4,14 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
-var CalIds = [ 'shawn.mccarthy@10gen.com', 'michael.lynn@10gen.com'];
+var config = JSON.parse(fs.readFileSync("config.json")); //Something to stash away for later use
+console.log(config.username);
 
-//var uri = "Needs sourcing from local secured files";
+var CalIds = [ 'shawn.Mccarthy@10gen.com', 'michael.lynn@10gen.com'];
+
+var uri = "mongodb+srv://" + config.username + ":" + config.password + "@" + config.repSetName + "/" + config.database;
+console.log(uri);
+//mongodb+srv://<USERNAME>:<PASSWORD>@calharvest-hm1mt.mongodb.net/test
 var dbname = "calendarHarvest";
 var collName = "calendarHarvest";
 var assert = require('assert');
@@ -159,7 +164,7 @@ for ( var i = 0 ; i < CalIds.length ; i++){
               console.log(err);
               client.close();
             }else{
-              collection.insertOne( { "entries" : events} db, function(err, result){
+              collection.insertOne( { "entries" : events}, function(err, result){
                 if (err){
                   console.log("Oops with the insertone");
                   console.log(err);

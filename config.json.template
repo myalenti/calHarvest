@@ -1,0 +1,5 @@
+{ "username" : <mongodb username>,
+"password" : <mongodb passwordpassword>,
+"database" : "calendars",
+"collection" : "SA",
+"repSetName" : <Mongodb replicaset name>}
